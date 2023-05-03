@@ -73,14 +73,31 @@ try:
     st.write(df)
 
 
-    show_json = False  # boolean variable to track whether to show the JSON or not
+    # show_json = False  # boolean variable to track whether to show the JSON or not
+    #
+    # if st.button("Show/Hide JSON"):
+    #     show_json = not show_json  # invert the boolean value
+    #
+    # if show_json:
+    #     # code to display the JSON
+    #     st.json(predictions_header)
 
+    # Create a button to show/hide the JSON file
     if st.button("Show/Hide JSON"):
-        show_json = not show_json  # invert the boolean value
 
-    if show_json:
-        # code to display the JSON
+        # Show the JSON file
         st.json(predictions_header)
+
+        # Set a flag to indicate that the button has been clicked
+        button_clicked = True
+    else:
+        # If the button has not been clicked, set the flag to False
+        button_clicked = False
+
+    # If the button has been clicked, show a message indicating that the JSON file is hidden
+    if button_clicked:
+        st.write("Click the button again to hide the JSON file.")
+
 except:
     st.write("Error: Could not extract data from the provided URL or file. Please check and try again.")
 
