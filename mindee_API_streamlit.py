@@ -11,7 +11,7 @@ st.set_page_config(layout="wide")
 st.title("Invoice Data Extraction App")
 
 file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
-
+fileurl = st.text_input('Input URL of invoice image: ', 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
 try:
 
     if file is not None:
@@ -22,7 +22,7 @@ try:
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     else:
         # Load a file from disk or using URL
-        fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png"
+        # fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png"
         st.image(fileurl)
         input_doc = mindee_client.doc_from_url(fileurl)
 
