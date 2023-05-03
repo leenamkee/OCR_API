@@ -72,7 +72,15 @@ try:
     st.subheader('Invoice Items')
     st.write(df)
 
-    st.json(predictions_header)
+
+    show_json = False  # boolean variable to track whether to show the JSON or not
+
+    if st.button("Show/Hide JSON"):
+        show_json = not show_json  # invert the boolean value
+
+    if show_json:
+        # code to display the JSON
+        st.json(predictions_header)
 except:
     st.write("Error: Could not extract data from the provided URL or file. Please check and try again.")
 
