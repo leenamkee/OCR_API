@@ -14,7 +14,7 @@ fileurl = st.text_input('Input URL of invoice image: ')
 # st.write('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
 st.text('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
 st.write('Or')
-file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
+file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 try:
 
@@ -74,7 +74,7 @@ try:
 
     st.json(predictions_header)
 except:
-    st.write("Error: Could not extract data from the provided URL. Please check the URL and try again.")
+    st.write("Error: Could not extract data from the provided URL or file. Please check and try again.")
 
 # Add an input box for the user to enter a URL
 
