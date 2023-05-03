@@ -11,6 +11,7 @@ st.set_page_config(layout="wide")
 st.title("Invoice Data Extraction App")
 
 fileurl = st.text_input('Input URL of invoice image: ', 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
+file = None
 st.write('Or')
 file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
