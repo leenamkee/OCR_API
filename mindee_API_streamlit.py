@@ -10,8 +10,10 @@ mindee_client = Client(api_key="3cdc41fac36e7f877c7ca11b23e97708")
 st.set_page_config(layout="wide")
 st.title("Invoice Data Extraction App")
 
-file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 fileurl = st.text_input('Input URL of invoice image: ', 'https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
+st.write('Or')
+file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+
 try:
 
     if file is not None:
