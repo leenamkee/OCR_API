@@ -2,6 +2,9 @@ import streamlit as st
 from PIL import Image
 import base64
 
+
+st.secrets["public_gsheets_url"]
+
 st.json({'foo':'bar','fu':'ba'})
 st.write(['st', 'is <', 3]) # see *
 

@@ -5,7 +5,9 @@ from PIL import Image
 import base64
 
 # Init a new client
-mindee_client = Client(api_key="3cdc41fac36e7f877c7ca11b23e97708")
+api_key = st.secrets["mindee_invoice_api_key"]
+mindee_client = Client(api_key=api_key)
+
 
 st.set_page_config(layout="wide")
 st.title("Invoice Data Extraction App")

@@ -1,8 +1,11 @@
 from mindee import Client, documents
 import pandas as pd
+import streamlit as st
 
 # Init a new client
-mindee_client = Client(api_key="3cdc41fac36e7f877c7ca11b23e97708")
+
+api_key = st.secrets["mindee_invoice_api_key"]
+mindee_client = Client(api_key=api_key)
 
 # Load a file from disk or using URL
 fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png"
