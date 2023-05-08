@@ -35,9 +35,8 @@ try:
 
             # Parse the document by passing the appropriate type
             api_response = input_doc.parse(documents.TypeInvoiceV4)
-    else:
-        st.write('upload invoice or click "Sample invoice" ')
-
+        else:
+            st.write('upload invoice or click "Sample invoice" ')
     # invoice header data
     predictions_header = api_response.__dict__['http_response']['document']['inference']['prediction']
     # features_header = api_response.__dict__['http_response']['document']['inference']['product']['features'][:-2]
@@ -88,6 +87,10 @@ try:
         st.json(predictions_header)
     else:
         st.write(':)')
+
+
+
+
 
 
 
