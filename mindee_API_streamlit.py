@@ -18,10 +18,13 @@ st.title("Invoice Data Extraction App")
 # st.write('Or')
 file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
+col1, col2 = st.columns(2)
+
+
 try:
 
     if file is not None:
-        st.image(file)
+        col1.image(file)
         img_bytes = file.read()
         encoded_img = base64.b64encode(img_bytes).decode('utf-8')
         input_doc = mindee_client.doc_from_file(file)
@@ -53,8 +56,8 @@ try:
         df_header.dropna(inplace=True, axis=1)
         df_header = df_header.transpose()
         df_header.rename(columns={0: 'value'}, inplace=True)
-        st.subheader('Invoice Header')
-        st.write(df_header)
+        col2.subheader('Invoice Header')
+        col2.write(df_header)
 
         # invoice item data
         predictions_line_items = api_response.__dict__['http_response']['document']['inference']['prediction']['line_items']
@@ -62,27 +65,27 @@ try:
         df = pd.DataFrame(predictions_line_items)
         df = df.loc[:, ['confidence', 'description', 'quantity', 'unit_price', 'total_amount']]
         # Display the DataFrame
-        st.subheader('Invoice Items')
-        st.write(df)
+        col2.subheader('Invoice Items')
+        col2.write(df)
 
 
         show_json = False  # boolean variable to track whether to show the JSON or not
 
-        if st.button("Show/Hide JSON"):
+        if col2.button("Show/Hide JSON"):
             show_json = not show_json  # invert the boolean value
 
         if show_json:
             # code to display the JSON
-            st.json(predictions_header)
+            col2.json(predictions_header)
         else:
-            st.write(':)')
+            col2.write(':)')
 
     else:
         st.write('upload invoice or click "Sample invoice" ')
         # Load a file from disk or using URL
         if st.button('Sample invoice'):
             fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-            st.image(fileurl)
+            col1.image(fileurl)
             input_doc = mindee_client.doc_from_url(fileurl)
 
             # Parse the document by passing the appropriate type
@@ -114,8 +117,8 @@ try:
             df_header.dropna(inplace=True, axis=1)
             df_header = df_header.transpose()
             df_header.rename(columns={0: 'value'}, inplace=True)
-            st.subheader('Invoice Header')
-            st.write(df_header)
+            col2.subheader('Invoice Header')
+            col2.write(df_header)
 
             # invoice item data
             predictions_line_items = api_response.__dict__['http_response']['document']['inference']['prediction'][
@@ -124,19 +127,19 @@ try:
             df = pd.DataFrame(predictions_line_items)
             df = df.loc[:, ['confidence', 'description', 'quantity', 'unit_price', 'total_amount']]
             # Display the DataFrame
-            st.subheader('Invoice Items')
-            st.write(df)
+            col2.subheader('Invoice Items')
+            col2.write(df)
 
             show_json = False  # boolean variable to track whether to show the JSON or not
 
-            if st.button("Show/Hide JSON"):
+            if col2.button("Show/Hide JSON"):
                 show_json = not show_json  # invert the boolean value
 
             if show_json:
                 # code to display the JSON
-                st.json(predictions_header)
+                col2.json(predictions_header)
             else:
-                st.write(':)')
+                col2.write(':)')
 
     # Create a button to show/hide the JSON file
     # if st.button("Show/Hide JSON"):
