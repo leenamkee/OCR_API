@@ -12,10 +12,10 @@ mindee_client = Client(api_key=api_key)
 st.set_page_config(layout="wide")
 st.title("Invoice Data Extraction App")
 
-fileurl = st.text_input('Input URL of invoice image: ')
+# fileurl = st.text_input('Input URL of invoice image: ')
 # st.write('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
-st.text('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
-st.write('Or')
+# st.text('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
+# st.write('Or')
 file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
 try:
@@ -26,14 +26,17 @@ try:
         encoded_img = base64.b64encode(img_bytes).decode('utf-8')
         input_doc = mindee_client.doc_from_file(file)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
-    else:
         # Load a file from disk or using URL
-        fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-        st.image(fileurl)
-        input_doc = mindee_client.doc_from_url(fileurl)
+        if st.button('Sample invoice'):
+            file = None
+            fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
+            st.image(fileurl)
+            input_doc = mindee_client.doc_from_url(fileurl)
 
-        # Parse the document by passing the appropriate type
-        api_response = input_doc.parse(documents.TypeInvoiceV4)
+            # Parse the document by passing the appropriate type
+            api_response = input_doc.parse(documents.TypeInvoiceV4)
+    else:
+        st.write('upload invoice or click "Sample invoice" ')
 
     # invoice header data
     predictions_header = api_response.__dict__['http_response']['document']['inference']['prediction']
