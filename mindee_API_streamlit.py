@@ -26,17 +26,6 @@ try:
         encoded_img = base64.b64encode(img_bytes).decode('utf-8')
         input_doc = mindee_client.doc_from_file(file)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
-    else:
-        st.write('upload invoice or click "Sample invoice" ')
-        # Load a file from disk or using URL
-        if st.button('Sample invoice'):
-            fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-            st.image(fileurl)
-            input_doc = mindee_client.doc_from_url(fileurl)
-
-            # Parse the document by passing the appropriate type
-            api_response = input_doc.parse(documents.TypeInvoiceV4)
-
         # invoice header data
         predictions_header = api_response.__dict__['http_response']['document']['inference']['prediction']
         # features_header = api_response.__dict__['http_response']['document']['inference']['product']['features'][:-2]
@@ -88,11 +77,66 @@ try:
         else:
             st.write(':)')
 
+    else:
+        st.write('upload invoice or click "Sample invoice" ')
+        # Load a file from disk or using URL
+        if st.button('Sample invoice'):
+            fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
+            st.image(fileurl)
+            input_doc = mindee_client.doc_from_url(fileurl)
 
+            # Parse the document by passing the appropriate type
+            api_response = input_doc.parse(documents.TypeInvoiceV4)
+            # invoice header data
+            predictions_header = api_response.__dict__['http_response']['document']['inference']['prediction']
+            # features_header = api_response.__dict__['http_response']['document']['inference']['product']['features'][:-2]
+            features_header = list(predictions_header.keys())
+            features_header.remove('line_items')
+            df_header = pd.DataFrame()
 
+            for i in range(len(features_header)):
+                predictions_header_dict = {}
+                if isinstance(predictions_header[features_header[i]], list) and len(
+                        predictions_header[features_header[i]]) == 1:
+                    predictions_header_dict = predictions_header[features_header[i]][0]
+                    last_value = list(predictions_header_dict.keys())[-1]
+                    # st.write(f'{features_header[i]}: {predictions_header_dict[last_value]}')
+                    df_header[features_header[i]] = [predictions_header_dict[last_value]]
+                elif isinstance(predictions_header[features_header[i]], list) and len(
+                        predictions_header[features_header[i]]) == 0:
+                    # st.write(f'{features_header[i]}: N/A')
+                    df_header[features_header[i]] = [None]
+                elif isinstance(predictions_header[features_header[i]], dict):
+                    predictions_header_dict = predictions_header[features_header[i]]
+                    last_value = list(predictions_header_dict.keys())[-1]
+                    # st.write(f'{features_header[i]}: {predictions_header_dict[last_value]}')
+                    df_header[features_header[i]] = [predictions_header_dict[last_value]]
+            df_header.dropna(inplace=True, axis=1)
+            df_header = df_header.transpose()
+            df_header.rename(columns={0: 'value'}, inplace=True)
+            st.subheader('Invoice Header')
+            st.write(df_header)
 
+            # invoice item data
+            predictions_line_items = api_response.__dict__['http_response']['document']['inference']['prediction'][
+                'line_items']
+            # line item data frame
+            df = pd.DataFrame(predictions_line_items)
+            df = df.loc[:, ['confidence', 'description', 'quantity', 'unit_price', 'total_amount']]
+            # Display the DataFrame
+            st.subheader('Invoice Items')
+            st.write(df)
 
+            show_json = False  # boolean variable to track whether to show the JSON or not
 
+            if st.button("Show/Hide JSON"):
+                show_json = not show_json  # invert the boolean value
+
+            if show_json:
+                # code to display the JSON
+                st.json(predictions_header)
+            else:
+                st.write(':)')
 
     # Create a button to show/hide the JSON file
     # if st.button("Show/Hide JSON"):
