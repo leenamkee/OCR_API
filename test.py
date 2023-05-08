@@ -110,40 +110,23 @@ print("\nLine Item Data:\n", line_item_df)
 
 
 
+import pdf2image
+from pdf2image import convert_from_path
+
+file_name = 'File'
+file_path = 'C:/Users/namkee.lee/Documents/AI Builder Document Processing Sample Data/Invoices/Contoso/Train/Contoso 1.pdf'
+pop_path = 'C:/Users/namkee.lee/PycharmProjects/OCR_API/poppler/Library/bin'
+
+pages = convert_from_path(file_path, poppler_path=pop_path)
+
+PDF_FILE_PATH = 'C:/Users/namkee.lee/Documents/AI Builder Document Processing Sample Data/Invoices/Contoso/Train/Contoso 1.pdf'
+pages = convert_from_path(PDF_FILE_PATH)
 
 
 
-api_response.document.type
-api_response.document.filepath
-api_response.document.filename
-api_response.document.checklist
-api_response.document.taxes[0].value
-api_response.document.customer_address.value
-api_response.document.customer_company_registrations
-api_response.document.due_date.value
-api_response.document.file_extension
-api_response.document.invoice_date.value
-api_response.document.invoice_number.value
-api_response.document.line_items[0].total_amount
-api_response.document.line_items[0].page_n
-api_response.document.line_items[0].quantity
-api_response.document.line_items[0].description
-api_response.document.line_items[0].product_code
-api_response.document.line_items[0].unit_price
-api_response.document.line_items[0].confidence
-api_response.document.line_items[0].tax_amount
-api_response.document.line_items[0].tax_rate
-api_response.document.locale.value
-api_response.document.locale.confidence
-api_response.document.locale.currency
-api_response.document.locale.language
-api_response.document.orientation
-api_response.document.supplier_address.value
-api_response.document.supplier_name.value
-api_response.document.supplier_payment_details
-api_response.document.total_amount.value
-api_response.document.total_net.value
-api_response.document.total_tax.value
+#    onvert_from_path(PDF_FILE_PATH)
+for i, page in enumerate(pages):
+    page.save(f"./data/{str(i)}.jpg", "JPEG")
 
 
 

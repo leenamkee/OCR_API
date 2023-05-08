@@ -16,7 +16,7 @@ st.title("Invoice Data Extraction App")
 # st.write('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
 # st.text('sample: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
 # st.write('Or')
-file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"])
 
 col1, col2 = st.columns(2)
 
@@ -25,8 +25,8 @@ try:
 
     if file is not None:
         col1.image(file)
-        img_bytes = file.read()
-        encoded_img = base64.b64encode(img_bytes).decode('utf-8')
+        # img_bytes = file.read()
+        # encoded_img = base64.b64encode(img_bytes).decode('utf-8')
         input_doc = mindee_client.doc_from_file(file)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
         # invoice header data
