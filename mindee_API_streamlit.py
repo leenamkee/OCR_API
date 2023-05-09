@@ -3,6 +3,11 @@ from mindee import Client, documents
 import pandas as pd
 from PIL import Image
 import base64
+import io
+import PyPDF2
+
+
+from PIL import Image
 
 # Init a new client
 api_key = st.secrets["mindee_invoice_api_key"]
@@ -21,12 +26,48 @@ file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png", "pdf"]
 col1, col2 = st.columns(2)
 
 
+###########################
+
+import fitz  # PyMuPDF library for working with PDF files
+
+def render_pdf(pdf_doc, page):
+    """
+    Renders the specified page of the PDF document.
+    """
+    page = pdf_doc.load_page(page)
+    pix = page.get_pixmap()
+    img = pix.to_pil_image()
+    return img
+
+def pdf_to_base64(file):
+    with open(file, "rb") as pdf_file:
+        base64_pdf = base64.b64encode(pdf_file.read()).decode('utf-8')
+    return base64_pdf
+
+#############################
+
 try:
 
     if file is not None:
-        col1.image(file)
-        # img_bytes = file.read()
-        # encoded_img = base64.b64encode(img_bytes).decode('utf-8')
+        try:
+            col1.image(file)
+            # img_bytes = file.read()
+            # encoded_img = base64.b64encode(img_bytes).decode('utf-8')
+        except:
+            with open(file.read(), "rb") as f:
+                base64_pdf = base64.b64encode(f)  # .decode('utf-8')
+            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="800" height="800" type="application/pdf"></iframe>'
+            col1.markdown(pdf_display, unsafe_allow_html=True)
+
+            # pdf_doc = fitz.open(stream=file.read(), filetype="pdf")
+            # img = render_pdf(pdf_doc, 0)
+            # st.write(file)
+            # with Image.open(file) as image:
+            #     # Convert to RGB format
+            #     image = image.convert("RGB")
+            #     # Display image
+            #     st.image(image)
+
         input_doc = mindee_client.doc_from_file(file)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
         # invoice header data
@@ -157,7 +198,8 @@ try:
     # if button_clicked:
     #     st.write("Click the button again to hide the JSON file.")
 
-except:
+except Exception as e:
+    st.write(e)
     st.write("Error: Could not extract data from the provided URL or file. Please check and try again.")
 
 # Add an input box for the user to enter a URL
