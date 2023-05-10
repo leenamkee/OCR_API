@@ -1,8 +1,10 @@
 from mindee import Client, documents
 import pandas as pd
+import streamlit as st
 
 # Init a new client
-mindee_client = Client(api_key="3cdc41fac36e7f877c7ca11b23e97708")
+api_key = st.secrets["mindee_invoice_api_key"]
+mindee_client = Client(api_key=api_key)
 
 # Load a file from disk or using URL
 # filepath = "C:/Users/namkee.lee/Documents/AI Builder Document Processing Sample Data/Invoices/Adatum/Train/Adatum 3.pdf"
@@ -13,13 +15,30 @@ mindee_client = Client(api_key="3cdc41fac36e7f877c7ca11b23e97708")
 
 # fileurl = "https://drive.google.com/file/d/1OON-E-_EMX9_d6pFpe-J2QHeOKH9Phzj/view?usp=share_link"
 
-fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png"
+# fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png"
+
+fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
 input_doc = mindee_client.doc_from_url(fileurl)
 
 # Parse the document by passing the appropriate type
 api_response = input_doc.parse(documents.TypeInvoiceV4)
 # a = api_response.__dict__
 # type(a)
+import json
+api_response_dict = api_response.__dict__['http_response']['document']['inference']
+# json 파일로 저장
+with open('api_response.json', 'w') as f :
+	json.dump(api_response_dict, f, indent=4)
+
+api_response_prediction_dict = api_response.__dict__['http_response']['document']['inference']['prediction']
+# json 파일로 저장
+with open('api_response_prediction.json', 'w') as f :
+	json.dump(api_response_prediction_dict, f, indent=4)
+
+with open('api_response_prediction.json', 'r') as json_read:
+    json_str = json.load(json_read)  # json.load 로 파일 읽기
+api_response_prediction = json.loads(json_str)
+
 
 predictions_header = api_response.__dict__['http_response']['document']['inference']['prediction']
 features_header = api_response.__dict__['http_response']['document']['inference']['product']['features'][:-2]
