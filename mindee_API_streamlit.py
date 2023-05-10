@@ -1,13 +1,15 @@
 import streamlit as st
 from mindee import Client, documents
 import pandas as pd
-from PIL import Image
+# from PIL import Image
 import base64
-import io
-import PyPDF2
-import os
-import time
 import json
+
+# import io
+# import PyPDF2
+# import os
+# import time
+
 
 from PIL import Image
 
