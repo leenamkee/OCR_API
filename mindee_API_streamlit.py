@@ -120,7 +120,7 @@ try:
     if file is not None:
         display_image(file=file, st=col1)
         extract_data_button = col2.button('extract data')
-        if col2.button('extract data'):
+        if extract_data_button: #col2.button('extract data'):
             # get reponse from mindee
             api_response_prediction = extract_data(file)
 
