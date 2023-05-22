@@ -119,20 +119,20 @@ def make_df_item(api_response_prediction):
 try:
     if file is not None:
         display_image(file=file, st=col1)
-        extract_data_button = col2.button('extract data')
-        if extract_data_button: #col2.button('extract data'):
+        #extract_data_button = col2.button('extract data')
+        #if extract_data_button: #col2.button('extract data'):
             # get reponse from mindee
-            api_response_prediction = extract_data(file)
+        api_response_prediction = extract_data(file)
 
-            # invoice header data
-            df_header = make_df_header(api_response_prediction)
-            col2.subheader('Invoice Header')
-            col2.write(df_header)
+        # invoice header data
+        df_header = make_df_header(api_response_prediction)
+        col2.subheader('Invoice Header')
+        col2.write(df_header)
 
-            # invoice item data
-            df = make_df_item(api_response_prediction)
-            col2.subheader('Invoice Items')
-            col2.write(df)
+        # invoice item data
+        df = make_df_item(api_response_prediction)
+        col2.subheader('Invoice Items')
+        col2.write(df)
     else:
         st.write('upload invoice or click "Sample invoice" ')
         # Load a file from disk or using URL
