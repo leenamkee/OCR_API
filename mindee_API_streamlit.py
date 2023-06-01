@@ -8,7 +8,10 @@ import json
 api_key = st.secrets["mindee_invoice_api_key"]
 mindee_client = Client(api_key=api_key)
 
-st.set_page_config(layout="wide")
+# st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
+
+
 container = st.container()
 # container.write("This is inside the container")
 container.image('DWP_header.jpg')
