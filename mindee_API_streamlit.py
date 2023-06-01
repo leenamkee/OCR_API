@@ -9,7 +9,10 @@ api_key = st.secrets["mindee_invoice_api_key"]
 mindee_client = Client(api_key=api_key)
 
 st.set_page_config(layout="wide")
-
+container = st.container()
+# container.write("This is inside the container")
+container.image('DWP_header.jpg')
+# container.latex("# Hyper Automation Detail")
 
 def render_pdf(pdf_doc, page):
     """

@@ -9,7 +9,13 @@ api_key = st.secrets["mindee_invoice_api_key"]
 mindee_client = Client(api_key=api_key)
 
 st.set_page_config(layout="wide")
+# st.set_page_config(layout="centered")
 
+
+container = st.container()
+# container.write("This is inside the container")
+container.image('DWP_header.jpg')
+# container.latex("# Hyper Automation Detail")
 
 def render_pdf(pdf_doc, page):
     """
@@ -42,10 +48,11 @@ def extract_data(input_image, input_type='Upload Image'):
         input_doc = mindee_client.doc_from_file(input_image)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     elif input_type == 'URL of Image':
-        input_doc =mindee_client.doc_from_url(input_image)
+        input_doc = mindee_client.doc_from_url(input_image)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     api_response_prediction = api_response.__dict__['http_response']['document']['inference']['prediction']
     return api_response_prediction
+
 
 def get_header_values(predictions_header, position):
     features_header = list(predictions_header.keys())
@@ -97,15 +104,10 @@ def make_df_item(api_response_prediction):
 def make_df_download(df, df_header):
     columns = ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
                'Item_QTY', 'Unit_price', 'Item_total']
-
     df_download = df.copy()
-
     # df_download.columns
-
     df_download = df_download[['description', 'quantity', 'unit_price', 'total_amount']]
-
     df_download.reset_index(inplace=True)
-
     df_download.columns = ['Item_NO', 'Item_description', 'Item_QTY', 'Unit_price', 'Item_total']
     try:
         df_download['Invoice_NO'] = df_header.loc['invoice_number']['value']
@@ -127,7 +129,6 @@ def make_df_download(df, df_header):
         df_download['Total_amount'] = df_header.loc['total_amount']['value']
     except:
         columns.remove('Total_amount')
-
     df_download = df_download[columns]
     return df_download
 
@@ -147,7 +148,7 @@ def start_processing(input_image, input_type):
                 with open('api_response_prediction.json', 'r') as json_read:
                     api_response_prediction = json.load(json_read)  # json.load 로 파일 읽기
             else:
-                api_response_prediction = extract_data(input_image)
+                api_response_prediction = extract_data(input_image, input_type)
             df_header = make_df_header(api_response_prediction)
             col2.subheader('Invoice Header')
             col2.write(df_header)
@@ -184,7 +185,7 @@ def main():
     # Set up the layout
     st.sidebar.title("Invoice Data Extraction")
     st.sidebar.markdown("Upload an image file or enter the URL of an image:")
-    input_type = st.sidebar.radio("", ("Upload Image", "URL of Image", "Sample Image"))
+    input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
