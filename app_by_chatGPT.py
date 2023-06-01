@@ -14,7 +14,7 @@ st.set_page_config(layout="centered")
 
 container = st.container()
 # container.write("This is inside the container")
-container.image('DWP_header.jpg')
+#container.image('DWP_header.jpg')
 # container.latex("# Hyper Automation Detail")
 
 hide_streamlit_style = """
