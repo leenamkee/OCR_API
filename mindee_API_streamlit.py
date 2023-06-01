@@ -14,6 +14,18 @@ container = st.container()
 container.image('DWP_header.jpg')
 # container.latex("# Hyper Automation Detail")
 
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden; }
+            footer {visibility: hidden;}
+            footer:after {visibility: visible; content:"";}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
+
+
 def render_pdf(pdf_doc, page):
     """
     Renders the specified page of the PDF document.
@@ -175,21 +187,23 @@ def start_processing(input_image, input_type):
 
 
 
-
 # Create a Streamlit app
 def main():
     # Set up the layout
-    st.sidebar.title("Invoice Data Extraction")
-    st.sidebar.markdown("Upload an image file or enter the URL of an image:")
-    input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+    # st.sidebar.title("Invoice Data Extraction")
+    # st.sidebar.markdown("Upload an image file or enter the URL of an image:")
+    # input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+    container.title("Invoice Data Extraction")
+    container.markdown("Upload an image file or enter the URL of an image:")
+    input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
-    url_help = 'input the URL of invoice image to extract data'
+    url_help = 'input a URL of invoice image to extract data'
     # upload_button_text = 'Upload'
 
     if input_type == "Upload Image":
-        uploaded_file = st.sidebar.file_uploader(upload_button_text_desc, accept_multiple_files=False,
+        uploaded_file = container.file_uploader(upload_button_text_desc, accept_multiple_files=False,
                                                  type=['png', 'jpg', 'jpeg'],
                                                  help=upload_help)
         try:
@@ -198,20 +212,20 @@ def main():
                 start_processing(uploaded_file, input_type)
                 # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
 
     elif input_type == "URL of Image":
-        url = st.sidebar.text_input("Input the URL of Invoice Image", help=url_help)
+        url = container.text_input("Input a URL of Invoice Image", help=url_help)
         try:
             if url:
                 # Display the image from URL
                 start_processing(url, input_type)
                 # st.image(url, caption="Image from URL", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
     else:
         fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
@@ -221,8 +235,9 @@ def main():
                 start_processing(fileurl, input_type)
                 # st.image(fileurl, caption="Sample Image", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
+
 
 
 if __name__ == "__main__":

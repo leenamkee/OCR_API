@@ -17,6 +17,16 @@ container = st.container()
 container.image('DWP_header.jpg')
 # container.latex("# Hyper Automation Detail")
 
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden; }
+            footer {visibility: hidden;}
+            footer:after {visibility: visible; content:"";}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+
 def render_pdf(pdf_doc, page):
     """
     Renders the specified page of the PDF document.
@@ -183,9 +193,12 @@ def start_processing(input_image, input_type):
 # Create a Streamlit app
 def main():
     # Set up the layout
-    st.sidebar.title("Invoice Data Extraction")
-    st.sidebar.markdown("Upload an image file or enter the URL of an image:")
-    input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+    # st.sidebar.title("Invoice Data Extraction")
+    # st.sidebar.markdown("Upload an image file or enter the URL of an image:")
+    # input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+    container.title("Invoice Data Extraction")
+    container.markdown("Upload an image file or enter the URL of an image:")
+    input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
@@ -193,7 +206,7 @@ def main():
     # upload_button_text = 'Upload'
 
     if input_type == "Upload Image":
-        uploaded_file = st.sidebar.file_uploader(upload_button_text_desc, accept_multiple_files=False,
+        uploaded_file = container.file_uploader(upload_button_text_desc, accept_multiple_files=False,
                                                  type=['png', 'jpg', 'jpeg'],
                                                  help=upload_help)
         try:
@@ -202,20 +215,20 @@ def main():
                 start_processing(uploaded_file, input_type)
                 # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
 
     elif input_type == "URL of Image":
-        url = st.sidebar.text_input("Input a URL of Invoice Image", help=url_help)
+        url = container.text_input("Input a URL of Invoice Image", help=url_help)
         try:
             if url:
                 # Display the image from URL
                 start_processing(url, input_type)
                 # st.image(url, caption="Image from URL", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
     else:
         fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
@@ -225,103 +238,9 @@ def main():
                 start_processing(fileurl, input_type)
                 # st.image(fileurl, caption="Sample Image", use_column_width=True)
         except Exception as e:
-            st.sidebar.write(e)
-            st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
+            container.write(e)
+            container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
-
-
-
-    # with st.sidebar.form("upload-form", clear_on_submit=True):
-    #     uploaded_file = st.file_uploader(upload_button_text_desc, accept_multiple_files=False,
-    #                                      type=['png', 'jpg', 'jpeg'],
-    #                                      help=upload_help)
-    #     submitted = st.form_submit_button(upload_button_text)
-    #
-    #     if submitted and uploaded_file is not None:
-    #         file = uploaded_file
-    #
-    # col1, col2 = st.columns(2)
-    # col1.title("Invoice Image")
-    # col2.title("Extracted Data")
-    # try:
-    #     if uploaded_file:
-    #         # Display the uploaded image
-    #         col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    #
-    #         # Extract data on button click
-    #         if col2.button("Extract data"):
-    #             # Convert uploaded file to bytes
-    #             # file_bytes = uploaded_file.read()
-    #
-    #             api_response_prediction = extract_data(uploaded_file)
-    #             df_header = make_df_header(api_response_prediction)
-    #             col2.subheader('Invoice Header')
-    #             col2.write(df_header)
-    #
-    #             # invoice item data
-    #             df = make_df_item(api_response_prediction)
-    #
-    #             # Display the DataFrame
-    #             col2.subheader('Invoice Items')
-    #             col2.write(df)
-    #
-    #             df_download = make_df_download(df, df_header)
-    #
-    #             @st.cache_data
-    #             def convert_df(df):
-    #                 return df.to_csv(index=False).encode('utf-8')
-    #
-    #
-    #             csv = convert_df(df_download)
-    #
-    #             col2.download_button(
-    #                 "Download csv",
-    #                 csv,
-    #                 f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
-    #                 "text/csv",
-    #                 key='download-csv'
-    #             )
-    #             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    #
-    #     else:
-    #         st.sidebar.write('upload invoice or click "Sample invoice" ')
-    #         # Load a file from disk or using URL
-    #         if st.sidebar.button('Sample invoice'):
-    #             fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-    #             col1.image(fileurl, caption="Sample Image", use_column_width=True)
-    #             # json file 읽기
-    #             with open('api_response_prediction.json', 'r') as json_read:
-    #                 api_response_prediction = json.load(json_read)  # json.load 로 파일 읽기
-    #
-    #             df_header = make_df_header(api_response_prediction)
-    #             col2.subheader('Invoice Header')
-    #             col2.write(df_header)
-    #
-    #             # invoice item data
-    #             df = make_df_item(api_response_prediction)
-    #             # Display the DataFrame
-    #             col2.subheader('Invoice Items')
-    #             col2.write(df)
-    #             df_download = make_df_download(df, df_header)
-    #
-    #             @st.cache_data
-    #             def convert_df(df):
-    #                 return df.to_csv(index=False).encode('utf-8')
-    #
-    #
-    #             csv = convert_df(df_download)
-    #
-    #             col2.download_button(
-    #                 "Download csv",
-    #                 csv,
-    #                 f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
-    #                 "text/csv",
-    #                 key='download-csv'
-    #             )
-    #             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    # except Exception as e:
-    # st.sidebar.write(e)
-    # st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
 
 
 if __name__ == "__main__":
