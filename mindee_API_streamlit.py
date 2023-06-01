@@ -97,15 +97,10 @@ def make_df_item(api_response_prediction):
 def make_df_download(df, df_header):
     columns = ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
                'Item_QTY', 'Unit_price', 'Item_total']
-
     df_download = df.copy()
-
     # df_download.columns
-
     df_download = df_download[['description', 'quantity', 'unit_price', 'total_amount']]
-
     df_download.reset_index(inplace=True)
-
     df_download.columns = ['Item_NO', 'Item_description', 'Item_QTY', 'Unit_price', 'Item_total']
     try:
         df_download['Invoice_NO'] = df_header.loc['invoice_number']['value']
@@ -127,7 +122,6 @@ def make_df_download(df, df_header):
         df_download['Total_amount'] = df_header.loc['total_amount']['value']
     except:
         columns.remove('Total_amount')
-
     df_download = df_download[columns]
     return df_download
 
@@ -188,7 +182,7 @@ def main():
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
-    url_help = 'input a URL of invoice image to extract data'
+    url_help = 'input the URL of invoice image to extract data'
     # upload_button_text = 'Upload'
 
     if input_type == "Upload Image":
@@ -226,101 +220,6 @@ def main():
         except Exception as e:
             st.sidebar.write(e)
             st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
-
-
-
-
-    # with st.sidebar.form("upload-form", clear_on_submit=True):
-    #     uploaded_file = st.file_uploader(upload_button_text_desc, accept_multiple_files=False,
-    #                                      type=['png', 'jpg', 'jpeg'],
-    #                                      help=upload_help)
-    #     submitted = st.form_submit_button(upload_button_text)
-    #
-    #     if submitted and uploaded_file is not None:
-    #         file = uploaded_file
-    #
-    # col1, col2 = st.columns(2)
-    # col1.title("Invoice Image")
-    # col2.title("Extracted Data")
-    # try:
-    #     if uploaded_file:
-    #         # Display the uploaded image
-    #         col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    #
-    #         # Extract data on button click
-    #         if col2.button("Extract data"):
-    #             # Convert uploaded file to bytes
-    #             # file_bytes = uploaded_file.read()
-    #
-    #             api_response_prediction = extract_data(uploaded_file)
-    #             df_header = make_df_header(api_response_prediction)
-    #             col2.subheader('Invoice Header')
-    #             col2.write(df_header)
-    #
-    #             # invoice item data
-    #             df = make_df_item(api_response_prediction)
-    #
-    #             # Display the DataFrame
-    #             col2.subheader('Invoice Items')
-    #             col2.write(df)
-    #
-    #             df_download = make_df_download(df, df_header)
-    #
-    #             @st.cache_data
-    #             def convert_df(df):
-    #                 return df.to_csv(index=False).encode('utf-8')
-    #
-    #
-    #             csv = convert_df(df_download)
-    #
-    #             col2.download_button(
-    #                 "Download csv",
-    #                 csv,
-    #                 f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
-    #                 "text/csv",
-    #                 key='download-csv'
-    #             )
-    #             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    #
-    #     else:
-    #         st.sidebar.write('upload invoice or click "Sample invoice" ')
-    #         # Load a file from disk or using URL
-    #         if st.sidebar.button('Sample invoice'):
-    #             fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-    #             col1.image(fileurl, caption="Sample Image", use_column_width=True)
-    #             # json file 읽기
-    #             with open('api_response_prediction.json', 'r') as json_read:
-    #                 api_response_prediction = json.load(json_read)  # json.load 로 파일 읽기
-    #
-    #             df_header = make_df_header(api_response_prediction)
-    #             col2.subheader('Invoice Header')
-    #             col2.write(df_header)
-    #
-    #             # invoice item data
-    #             df = make_df_item(api_response_prediction)
-    #             # Display the DataFrame
-    #             col2.subheader('Invoice Items')
-    #             col2.write(df)
-    #             df_download = make_df_download(df, df_header)
-    #
-    #             @st.cache_data
-    #             def convert_df(df):
-    #                 return df.to_csv(index=False).encode('utf-8')
-    #
-    #
-    #             csv = convert_df(df_download)
-    #
-    #             col2.download_button(
-    #                 "Download csv",
-    #                 csv,
-    #                 f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
-    #                 "text/csv",
-    #                 key='download-csv'
-    #             )
-    #             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    # except Exception as e:
-    # st.sidebar.write(e)
-    # st.sidebar.write("Error: Could not extract data from the provided file. Please check and try again.")
 
 
 if __name__ == "__main__":
