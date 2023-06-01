@@ -200,7 +200,7 @@ def main():
 
 
     elif input_type == "URL of Image":
-        url = st.sidebar.text_input("Input a URL of Invoice Image", help=url_help)
+        url = st.sidebar.text_input("Input the URL of Invoice Image", help=url_help)
         try:
             if url:
                 # Display the image from URL
