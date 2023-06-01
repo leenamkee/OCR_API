@@ -154,6 +154,29 @@ def make_df_item(api_response_prediction):
     df = df.loc[:, ['confidence', 'description', 'quantity', 'unit_price', 'total_amount']]
     return df
 
+def make_df_download(df):
+    columns = ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
+               'Item_QTY', 'Unit_price', 'Item_total']
+    df_download = df.copy()
+
+    # df_download.columns
+
+    df_download = df_download[['description', 'quantity', 'unit_price', 'total_amount']]
+
+    df_download.reset_index(inplace=True)
+
+    df_download.columns = ['Item_NO', 'Item_description', 'Item_QTY', 'Unit_price', 'Item_total']
+
+    df_download['Invoice_NO'] = df_header.loc['invoice_number']['value']
+    df_download['Supplier_name'] = df_header.loc['supplier_name']['value']
+    df_download['Customer_name'] = df_header.loc['customer_name']['value']
+    df_download['Date'] = df_header.loc['date']['value']
+    df_download['Total_amount'] = df_header.loc['total_amount']['value']
+
+    df_download = df_download[
+        ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
+         'Item_QTY', 'Unit_price', 'Item_total']]
+    return df_download
 
 
 try:
@@ -173,6 +196,25 @@ try:
             # Display the DataFrame
             col2.subheader('Invoice Items')
             col2.write(df)
+
+            df_download = make_df_download(df)
+
+
+            @st.cache_data
+            def convert_df(df):
+                return df.to_csv(index=False).encode('utf-8')
+
+
+            csv = convert_df(df_download)
+
+            display_image(file=file, st=col1)
+            col2.download_button(
+                "Press to Download",
+                csv,
+                f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
+                "text/csv",
+                key='download-csv'
+            )
 
 
             show_json = False  # boolean variable to track whether to show the JSON or not
@@ -204,6 +246,50 @@ try:
             # Display the DataFrame
             col2.subheader('Invoice Items')
             col2.write(df)
+
+
+            # columns = ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
+            #            'Item_QTY', 'Unit_price', 'Item_total']
+            # # df_download = pd.DataFrame(columns=columns)
+            # df_download = df.copy()
+            #
+            # #df_download.columns
+            #
+            # df_download = df_download[['description', 'quantity', 'unit_price', 'total_amount']]
+            #
+            # df_download.reset_index(inplace=True)
+            #
+            # df_download.columns = ['Item_NO', 'Item_description', 'Item_QTY', 'Unit_price', 'Item_total']
+            #
+            # df_download['Invoice_NO'] = df_header.loc['invoice_number']['value']
+            # df_download['Supplier_name'] = df_header.loc['supplier_name']['value']
+            # df_download['Customer_name'] = df_header.loc['customer_name']['value']
+            # df_download['Date'] = df_header.loc['date']['value']
+            # df_download['Total_amount'] = df_header.loc['total_amount']['value']
+            #
+            # df_download = df_download[
+            #     ['Invoice_NO', 'Supplier_name', 'Customer_name', 'Date', 'Total_amount', 'Item_NO', 'Item_description',
+            #      'Item_QTY', 'Unit_price', 'Item_total']]
+            #
+            df_download = make_df_download(df)
+
+            @st.cache_data
+            def convert_df(df):
+                return df.to_csv(index=False).encode('utf-8')
+
+
+            csv = convert_df(df_download)
+
+            # col1.image(fileurl)
+            col2.download_button(
+                "Press to Download",
+                csv,
+                f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
+                "text/csv",
+                key='download-csv'
+            )
+
+
 
 except Exception as e:
     st.write(e)
@@ -255,7 +341,14 @@ except Exception as e:
 #     except:
 #         st.write("Error: Could not extract data from the provided URL. Please check the URL and try again.")
 
+@st.cache_data(ttl=600)
+def load_data(sheets_url):
+    csv_url = sheets_url.replace("/edit#gid=", "/export?format=csv&gid=")
+    return pd.read_csv(csv_url)
 
+df_test = load_data(st.secrets["public_gsheets_url"])
 
-
+# Print results.
+for row in df_test.itertuples():
+    st.write(f"{row.name} has a :{row.pet}:")
 

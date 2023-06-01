@@ -1,15 +1,16 @@
 import streamlit as st
 import pdf2image
+from pdf2image import convert_from_path
 import zipfile
 import io
 
 pop_path = '/poppler/Library/bin'
 
 
-st.set_page_config(
-    page_title="PDF to PNG",
-    layout="wide"
-)
+# st.set_page_config(
+#     page_title="PDF to PNG",
+#     layout="wide"
+# )
 st.markdown("# :spiral_note_pad: Tom's :blue[PDF] to :red[PNG] Converter :frame_with_picture:")
 st.markdown("---")
 
@@ -39,3 +40,15 @@ if button and pdf_uploaded is not None:
 
         with top_container, col2:
             download = st.download_button("Download", data=zip_contents, file_name=f"Images.zip")
+
+
+#-*- coding:utf-8 -*-
+
+# from pdf2image import convert_from_path
+#
+# file_name = "Adatum 2.pdf"
+#
+# pages = convert_from_path("C:/Users/namkee.lee/Downloads/" + file_name)
+#
+# for i, page in enumerate(pages):
+# 	page.save("C:/Users/namkee.lee/Downloads/"+file_name+str(i)+".jpg", "JPEG")
