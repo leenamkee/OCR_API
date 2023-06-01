@@ -178,7 +178,7 @@ def main():
     # Set up the layout
     st.sidebar.title("Invoice Data Extraction")
     st.sidebar.markdown("Upload an image file or enter the URL of an image:")
-    input_type = st.sidebar.radio("", ("Upload Image", "URL of Image", "Sample Image"))
+    input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
