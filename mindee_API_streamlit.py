@@ -131,7 +131,7 @@ def start_processing(input_image, input_type):
     col1.title("Invoice Image")
     col2.title("Extracted Data")
     if input_image:
-        col1.image(input_image, caption="Uploaded Image", use_column_width=True)
+        col1.image(input_image, caption=input_type, use_column_width=True)
 
         # Extract data on button click
         if col2.button("Extract data"):
