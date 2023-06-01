@@ -42,7 +42,7 @@ def extract_data(input_image, input_type='Upload Image'):
         input_doc = mindee_client.doc_from_file(input_image)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     elif input_type == 'URL of Image':
-        input_doc =mindee_client.doc_from_url(input_image)
+        input_doc = mindee_client.doc_from_url(input_image)
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     api_response_prediction = api_response.__dict__['http_response']['document']['inference']['prediction']
     return api_response_prediction
@@ -141,7 +141,7 @@ def start_processing(input_image, input_type):
                 with open('api_response_prediction.json', 'r') as json_read:
                     api_response_prediction = json.load(json_read)  # json.load 로 파일 읽기
             else:
-                api_response_prediction = extract_data(input_image)
+                api_response_prediction = extract_data(input_image, input_type)
             df_header = make_df_header(api_response_prediction)
             col2.subheader('Invoice Header')
             col2.write(df_header)
