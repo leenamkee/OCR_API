@@ -199,6 +199,7 @@ def main():
     container.title("Invoice Data Extraction")
     container.markdown("Upload an image file or enter the URL of an image:")
     input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+    container.markdown("Supporting Languages: English, Spanish, German, French, Dutch, Portuguese")
     # st.sidebar.markdown("Upload an image file:")
     upload_button_text_desc = 'Choose a file'
     upload_help = 'Upload an invoice image to extract data'
