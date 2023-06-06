@@ -8,8 +8,8 @@ import json
 api_key = st.secrets["mindee_invoice_api_key"]
 mindee_client = Client(api_key=api_key)
 
-st.set_page_config(layout="wide")
-# st.set_page_config(layout="centered")
+# st.set_page_config(layout="wide")
+st.set_page_config(layout="centered")
 
 
 container = st.container()
@@ -25,8 +25,6 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-
-
 
 
 def render_pdf(pdf_doc, page):
@@ -64,6 +62,7 @@ def extract_data(input_image, input_type='Upload Image'):
         api_response = input_doc.parse(documents.TypeInvoiceV4)
     api_response_prediction = api_response.__dict__['http_response']['document']['inference']['prediction']
     return api_response_prediction
+
 
 def get_header_values(predictions_header, position):
     features_header = list(predictions_header.keys())
@@ -144,13 +143,11 @@ def make_df_download(df, df_header):
     return df_download
 
 
-def start_processing(input_image, input_type):
-    col1, col2 = st.columns(2)
-    col1.title("Invoice Image")
-    col2.title("Extracted Data")
+def start_processing(input_image, input_type, col1, col2):
+    df_header = pd.DataFrame()
+    df = pd.DataFrame()
     if input_image:
-        col1.image(input_image, caption=input_type, use_column_width=True)
-
+        col1.image(input_image, caption="Uploaded Image", use_column_width=True)
         # Extract data on button click
         if col2.button("Extract data"):
             # Convert uploaded file to bytes
@@ -161,88 +158,124 @@ def start_processing(input_image, input_type):
             else:
                 api_response_prediction = extract_data(input_image, input_type)
             df_header = make_df_header(api_response_prediction)
-            col2.subheader('Invoice Header')
-            col2.write(df_header)
-
-            # invoice item data
             df = make_df_item(api_response_prediction)
+    return df_header, df
 
-            # Display the DataFrame
-            col2.subheader('Invoice Items')
-            col2.write(df)
 
-            df_download = make_df_download(df, df_header)
 
-            @st.cache_data
-            def convert_df(df):
-                return df.to_csv(index=False).encode('utf-8')
-
-            csv = convert_df(df_download)
-
-            col2.download_button(
-                "Download csv",
-                csv,
-                f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
-                "text/csv",
-                key='download-csv'
-            )
             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
 
 
+
 # Create a Streamlit app
-def main():
-    # Set up the layout
-    # st.sidebar.title("Invoice Data Extraction")
-    # st.sidebar.markdown("Upload an image file or enter the URL of an image:")
-    # input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
-    container.title("Invoice Data Extraction")
-    container.markdown("Upload an image file or enter the URL of an image:")
-    input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
-    # st.sidebar.markdown("Upload an image file:")
-    upload_button_text_desc = 'Choose a file'
-    upload_help = 'Upload an invoice image to extract data'
-    url_help = 'input a URL of invoice image to extract data'
-    # upload_button_text = 'Upload'
 
-    if input_type == "Upload Image":
-        uploaded_file = container.file_uploader(upload_button_text_desc, accept_multiple_files=False,
-                                                 type=['png', 'jpg', 'jpeg'],
-                                                 help=upload_help)
-        try:
-            if uploaded_file:
-                # Display the uploaded image
-                start_processing(uploaded_file, input_type)
-                # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-        except Exception as e:
-            container.write(e)
-            container.write("Error: Could not extract data from the provided file. Please check and try again.")
+# Set up the layout
+# st.sidebar.title("Invoice Data Extraction")
+# st.sidebar.markdown("Upload an image file or enter the URL of an image:")
+# input_type = st.sidebar.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+container.title("Invoice Data Extraction")
+container.markdown("Upload an image file or enter the URL of an image:")
+input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
+# st.sidebar.markdown("Upload an image file:")
+upload_button_text_desc = 'Choose a file'
+upload_help = 'Upload an invoice image to extract data'
+url_help = 'input a URL of invoice image to extract data'
+df_header = pd.DataFrame()
+df = pd.DataFrame()
+# upload_button_text = 'Upload'
 
+col1, col2 = st.columns(2)
+col1.title("Invoice Image")
+col2.title("Extracted Data")
 
-    elif input_type == "URL of Image":
-        url = container.text_input("Input a URL of Invoice Image", help=url_help)
-        container.write('URL for test: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
-        try:
-            if url:
-                # Display the image from URL
-                start_processing(url, input_type)
-                # st.image(url, caption="Image from URL", use_column_width=True)
-        except Exception as e:
-            container.write(e)
-            container.write("Error: Could not extract data from the provided file. Please check and try again.")
-
-    else:
-        fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
-        try:
-            if fileurl:
-                # Display the image from URL
-                start_processing(fileurl, input_type)
-                # st.image(fileurl, caption="Sample Image", use_column_width=True)
-        except Exception as e:
-            container.write(e)
-            container.write("Error: Could not extract data from the provided file. Please check and try again.")
+if input_type == "Upload Image":
+    uploaded_file = container.file_uploader(upload_button_text_desc, accept_multiple_files=False,
+                                             type=['png', 'jpg', 'jpeg'],
+                                             help=upload_help)
+    try:
+        if uploaded_file:
+            # Display the uploaded image
+            df_header, df = start_processing(uploaded_file, input_type, col1, col2)
+            # st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+    except Exception as e:
+        container.write(e)
+        container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
 
+elif input_type == "URL of Image":
+    url = container.text_input("Input a URL of Invoice Image", help=url_help)
+    container.write('URL for test: https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbHdMvz%2FbtscHQrjdn7%2Fs9sHRPtvsfKKVtkTliikx1%2Fimg.png')
+    try:
+        if url:
+            # Display the image from URL
+            df_header, df = start_processing(url, input_type, col1, col2)
+            # st.image(url, caption="Image from URL", use_column_width=True)
+    except Exception as e:
+        container.write(e)
+        container.write("Error: Could not extract data from the provided file. Please check and try again.")
 
-if __name__ == "__main__":
-    main()
+else:
+    fileurl = "https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FdyPlb5%2FbtscPcNUgnr%2FCkjWKD53kndLyUXeolKYq0%2Fimg.png"
+    try:
+        if fileurl:
+            # Display the image from URL
+            df_header, df = start_processing(fileurl, input_type, col1, col2)
+            # st.image(fileurl, caption="Sample Image", use_column_width=True)
+    except Exception as e:
+        container.write(e)
+        container.write("Error: Could not extract data from the provided file. Please check and try again.")
+
+
+if len(df_header):
+    col2.subheader('Invoice Header')
+    col2.write(df_header)
+    # df_header = load_data()
+    df_header1 = pd.DataFrame(
+    [
+        {"command": "st.selectbox", "rating": 4, "is_widget": True},
+        {"command": "st.balloons", "rating": 5, "is_widget": False},
+        {"command": "st.time_input", "rating": 3, "is_widget": True},
+    ]
+)
+
+    edited_df_header = col2.experimental_data_editor(df_header1)
+
+    # invoice item data
+    # df = make_df_item(api_response_prediction)
+
+    # Display the DataFrame
+    col2.subheader('Invoice Items')
+    #col2.write(df)
+    edited_df = col2.experimental_data_editor(df)
+
+    # df_download = make_df_download(df, df_header)
+    # df_download = make_df_download(edited_df, edited_df_header)
+    #
+    # @st.cache_data
+    # def convert_df(df):
+    #     return df.to_csv(index=False).encode('utf-8')
+    #
+    # csv = convert_df(df_download)
+    #
+    # col2.download_button(
+    #     "Download csv",
+    #     csv,
+    #     f"file_{df_header.iloc[9][0]}_{df_header.iloc[2][0]}.csv",
+    #     "text/csv",
+    #     key='download-csv'
+    # )
+
+
+
+# df11 = pd.DataFrame(
+#     [
+#         {"command": "st.selectbox", "rating": 4, "is_widget": True},
+#         {"command": "st.balloons", "rating": 5, "is_widget": False},
+#         {"command": "st.time_input", "rating": 3, "is_widget": True},
+#     ]
+# )
+# edited_df11 = col2.experimental_data_editor(df11)
+
+# favorite_command = edited_df.loc[edited_df["rating"].idxmax()]["command"]
+# st.markdown(f"Your favorite command is **{favorite_command}** 🎈")
