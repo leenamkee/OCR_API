@@ -3,6 +3,7 @@ import pandas as pd
 from mindee import Client, documents
 import base64
 import json
+from datetime import datetime
 
 # Initialize Mindee client
 api_key = st.secrets["mindee_invoice_api_key"]
@@ -159,9 +160,21 @@ def start_processing(input_image, input_type, col1, col2):
                 api_response_prediction = extract_data(input_image, input_type)
             df_header = make_df_header(api_response_prediction)
             df = make_df_item(api_response_prediction)
+            file = './files/log/extraction_log.txt'
+            extracting_log(file, input_type)
     return df_header, df
 
+def extracting_log(file, input_type):
+    #file = './files/log/extraction_log.txt'
+    f = open(file, 'a')
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'{timestamp} {input_type} \n'
+    f.write(line)
+    f.close()
 
+
+
+    return None
 
             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
 
@@ -177,7 +190,7 @@ def start_processing(input_image, input_type, col1, col2):
 container.title("Invoice Data Extraction")
 container.markdown("Upload an image file or enter the URL of an image:")
 input_type = container.radio("select one", ( "Sample Image", "Upload Image", "URL of Image"))
-container.markdown("Supporting Languages: English, Spanish, German, French, Dutch, Portuguese")
+container.markdown("###### Supporting Languages: English, Spanish, German, French, Dutch, Portuguese")
 # st.sidebar.markdown("Upload an image file:")
 upload_button_text_desc = 'Choose a file'
 upload_help = 'Upload an invoice image to extract data'

@@ -3,6 +3,7 @@ import pandas as pd
 from mindee import Client, documents
 import base64
 import json
+from datetime import datetime
 
 # Initialize Mindee client
 api_key = st.secrets["mindee_invoice_api_key"]
@@ -171,6 +172,9 @@ def start_processing(input_image, input_type):
             col2.subheader('Invoice Items')
             col2.write(df)
 
+            file = './files/log/extraction_log.txt'
+            extracting_log(file, input_type)
+
             df_download = make_df_download(df, df_header)
 
             @st.cache_data
@@ -187,6 +191,14 @@ def start_processing(input_image, input_type):
                 key='download-csv'
             )
             # col1.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
+
+def extracting_log(file, input_type):
+    #file = './files/log/extraction_log.txt'
+    f = open(file, 'a')
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    line = f'{timestamp} {input_type} \n'
+    f.write(line)
+    f.close()
 
 
 
