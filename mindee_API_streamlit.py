@@ -172,7 +172,7 @@ def start_processing(input_image, input_type):
             col2.subheader('Invoice Items')
             col2.write(df)
 
-            file = './files/log/extraction_log.txt'
+            file = 'https://github.com/leenamkee/OCR_API/blob/master/files/log/extraction_log.txt'
             extracting_log(file, input_type)
 
             df_download = make_df_download(df, df_header)
