@@ -173,7 +173,7 @@ def start_processing(input_image, input_type):
             col2.write(df)
 
             # file = 'https://github.com/leenamkee/OCR_API/blob/master/files/log/extraction_log.txt'
-            file = './files/log/extraction_log.txt'
+            file = 'extraction_log.txt'
             extracting_log(file, input_type)
 
             df_download = make_df_download(df, df_header)
